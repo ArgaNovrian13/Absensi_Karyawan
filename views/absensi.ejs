@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Absensi Karyawan dengan Wajah</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Absensi Karyawan</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#riwayat">Riwayat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/profile">Profil</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="toggleTheme">
+                <i class="bi bi-brightness-high-fill"></i> Light Mode
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="text-center animate__animated animate__fadeInDown">
+        Absensi Karyawan dengan Wajah
+      </h1>
+
+      <!-- Tombol untuk membuka kamera -->
+      <div class="text-center">
+        <button
+          id="openCamera"
+          class="btn btn-primary btn-lg my-4 animate__animated animate__pulse"
+        >
+          <i class="bi bi-camera"></i> Buka Kamera
+        </button>
+      </div>
+
+      <!-- Video dan Kamera -->
+      <div class="video-container text-center" style="display: none">
+        <video id="video" width="720" height="560" autoplay></video>
+        <div class="mt-3">
+          <button id="capture" class="btn btn-secondary btn-lg animate__pulse">
+            <i class="bi bi-camera2"></i> Ambil Gambar
+          </button>
+          <button
+            id="closeCamera"
+            class="btn btn-danger btn-lg mt-2 animate__animated animate__pulse"
+          >
+            <i class="bi bi-camera-video-off"></i> Tutup Kamera
+          </button>
+        </div>
+      </div>
+      <canvas
+        id="canvas"
+        width="720"
+        height="560"
+        style="display: none"
+      ></canvas>
+      <!-- Form Absensi -->
+      <form id="absensiForm" class="mt-5">
+        <div class="form-group mb-3">
+          <label for="nama" class="form-label">Nama Karyawan</label>
+          <input
+            type="text"
+            id="nama"
+            class="form-control"
+            value="<%= username %>"
+            readonly
+          />
+        </div>
+        <div class="form-group mb-3">
+          <label for="tanggal" class="form-label">Tanggal</label>
+          <input type="date" id="tanggal" class="form-control" required />
+        </div>
+        <div class="form-group mb-4">
+          <label for="status" class="form-label">Status</label>
+          <select id="status" class="form-control">
+            <option value="hadir">Hadir</option>
+            <option value="izin">Izin</option>
+            <option value="sakit">Sakit</option>
+          </select>
+        </div>
+
+        <input type="hidden" id="foto" name="foto" />
+        <button type="submit" class="btn btn-warning w-100 btn-lg">
+          <i class="fas fa-check"></i> Absen
+        </button>
+      </form>
+      <div id="message" class="mt-4"></div>
+
+      <!-- Data Absensi Terakhir -->
+      <h2 class="mt-5">Data Absensi Terakhir</h2>
+      <div id="hasilAbsensi" class="mb-5">
+        <p>Nama: <span id="hasilNama"></span></p>
+        <p>Tanggal: <span id="hasilTanggal"></span></p>
+        <p>Status: <span id="hasilStatus"></span></p>
+        <img id="hasilGambar" alt="Gambar Wajah" width="360" />
+      </div>
+
+      <!-- Pagination Controls -->
+
+      <div id="paginationControls" class="mb-3 text-center"></div>
+
+      <!-- Riwayat Absensi -->
+      <h2 id="riwayat" class="mt-5">Riwayat Absensi</h2>
+      <div class="table-responsive">
+        <table id="riwayatAbsensiTable" class="table table-hover">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Tanggal</th>
+              <th>Waktu</th>
+              <th>Status</th>
+              <th>Lokasi</th>
+              <th>Gambar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data absensi akan dimuat di sini -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.0.0/docx.min.js"></script>
+    <!-- Animasi CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>

@@ -11,3 +11,6 @@ Tutorial Menggunakan Aplikasi Absen Karyawan ini
 - kemudian cd absensi
 - setelah itu npm install
 - setelah itu npm run dev
+
+Tampilan Aplikasinya 
+![Uploading image.png…]()
